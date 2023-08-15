@@ -9,15 +9,17 @@ package main
 // 404 NOT FOUND: /world
 
 import (
-	"fmt"
 	"minigin"
 	"net/http"
 )
 
 func main() {
 	e := minigin.New()
-	e.GET("/", func(w http.ResponseWriter, req *http.Request) {
-		fmt.Fprintf(w, "URL.Path = %q\n", req.URL.Path)
+	e.GET("/", func(c *minigin.Context) {
+		c.String(http.StatusOK, "URL.Path = %q\n", c.Path)
+	})
+	e.GET("/test", func(c *minigin.Context) {
+		c.String(http.StatusOK, "URL.Path = %q\n", c.Path)
 	})
 	e.Run(":8080")
 }
