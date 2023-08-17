@@ -38,7 +38,7 @@ func (e *Engine) NewRouterGroup(p string) *RouterGroup {
 
 func (group *RouterGroup) addRoute(method string, pattern string, handler HandlerFunc) {
 	pattern = group.Prefix + pattern
-	group.engine.router.addRouter(method, pattern, handler)
+	group.engine.router.addRoute(method, pattern, handler)
 }
 
 func (group *RouterGroup) GET(pattern string, handler HandlerFunc) {

@@ -19,7 +19,7 @@ func (r *Router) parsePattern(pattern string) []string {
 	return parts
 }
 
-func (r *Router) addRouter(method string, pattern string, handler HandlerFunc) {
+func (r *Router) addRoute(method string, pattern string, handler HandlerFunc) {
 	parts := r.parsePattern(pattern)
 	updateTrie(r.root, method, parts, handler)
 }
