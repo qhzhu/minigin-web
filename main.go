@@ -21,30 +21,12 @@ func main() {
 	e.GET("/aa", func(c *minigin.Context) {
 		c.String(http.StatusOK, "URL.Path = %q\n", c.Path)
 	})
-	e.GET("/aa/*dwdw/dwd", func(c *minigin.Context) {
-		c.String(http.StatusOK, "URL.Path = %q\n", c.Path)
+	e.GET("/aa/*name/dwd", func(c *minigin.Context) {
+		c.String(http.StatusOK, "Your name = %q\n", c.Paras["*name"])
 	})
-	// e.GET("/test/hello/world", func(c *minigin.Context) {
-	// 	c.String(http.StatusOK, "URL.Path = %q\n", c.Path)
-	// })
-	// e.GET("/test/hello/dw", func(c *minigin.Context) {
-	// 	c.String(http.StatusOK, "URL.Path = %q\n", c.Path)
-	// })
-	// e.GET("/test/hello/world/this", func(c *minigin.Context) {
-	// 	c.String(http.StatusOK, "URL.Path = %q\n", c.Path)
-	// })
-	// e.GET("/ee", func(c *minigin.Context) {
-	// 	c.String(http.StatusOK, "URL.Path = %q\n", c.Path)
-	// })
-	// e.GET("/hello", func(c *minigin.Context) {
-	// 	c.String(http.StatusOK, "hello %s, you're at %s\n", c.Query("name"), c.Path)
-	// })
-	// e.POST("/login", func(c *minigin.Context) {
-	// 	c.JSON(http.StatusOK, minigin.H{
-	// 		"username": c.PostForm("username"),
-	// 		"password": c.PostForm("password"),
-	// 	})
-	// })
-
+	grp1 := e.NewRouterGroup("/admin")
+	grp1.GET("/*type", func(c *minigin.Context) {
+		c.String(http.StatusOK, "Your name = %q\n", c.Paras["*type"])
+	})
 	e.Run(":8080")
 }

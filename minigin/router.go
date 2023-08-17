@@ -19,14 +19,16 @@ func (r *Router) parsePattern(pattern string) []string {
 	return parts
 }
 
-func (r *Router) addRouter(method string, pattern string, handler HandlerFunc) {
+func (r *Router) addRoute(method string, pattern string, handler HandlerFunc) {
 	parts := r.parsePattern(pattern)
 	updateTrie(r.root, method, parts, handler)
 }
 
 func (r *Router) handle(c *Context) {
 	parts := r.parsePattern(c.Path)
-	handler := searchTrie(0, r.root, c.Method, parts)
+	paramsMap := make(map[string]string)
+	handler := searchTrie(0, r.root, c.Method, parts, paramsMap)
+	c.Paras = paramsMap
 	if handler != nil {
 		handler(c)
 	} else {
