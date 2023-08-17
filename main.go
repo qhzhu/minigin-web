@@ -21,8 +21,8 @@ func main() {
 	e.GET("/aa", func(c *minigin.Context) {
 		c.String(http.StatusOK, "URL.Path = %q\n", c.Path)
 	})
-	e.GET("/aa/*dwdw/dwd", func(c *minigin.Context) {
-		c.String(http.StatusOK, "URL.Path = %q\n", c.Path)
+	e.GET("/aa/*name/dwd", func(c *minigin.Context) {
+		c.String(http.StatusOK, "Your name = %q\n", c.Paras["*name"])
 	})
 	// e.GET("/test/hello/world", func(c *minigin.Context) {
 	// 	c.String(http.StatusOK, "URL.Path = %q\n", c.Path)
