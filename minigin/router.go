@@ -2,27 +2,34 @@ package minigin
 
 import (
 	"net/http"
+	"strings"
 )
 
 type Router struct {
-	handlers map[string]HandlerFunc
+	root *node
 }
 
 func newRouter() *Router {
-	return &Router{handlers: make(map[string]HandlerFunc)}
+	return &Router{root: newNode("GET", "/", false)}
+}
+
+func (r *Router) parsePattern(pattern string) []string {
+	parts := strings.Split(pattern, "/")
+	parts[0] = "/"
+	return parts
 }
 
 func (r *Router) addRouter(method string, pattern string, handler HandlerFunc) {
-	key := method + "-" + pattern
-	r.handlers[key] = handler
+	parts := r.parsePattern(pattern)
+	updateTrie(r.root, method, parts, handler)
 }
 
 func (r *Router) handle(c *Context) {
-	key := c.Method + "-" + c.Path
-	if handler, exists := r.handlers[key]; exists {
+	parts := r.parsePattern(c.Path)
+	handler := searchTrie(0, r.root, c.Method, parts)
+	if handler != nil {
 		handler(c)
 	} else {
 		c.String(http.StatusNotFound, "404 NOT FOUND: %s\n", c.Path)
 	}
-
 }
