@@ -18,15 +18,27 @@ type Context struct {
 	Paras  map[string]string
 	//response
 	StatusCode int
+
+	//middlewares
+	cntIndex int
+	handlers []HandlerFunc
 }
 
 func newContext(w http.ResponseWriter, req *http.Request) *Context {
 	return &Context{
-		Writer: w,
-		Req:    req,
-		Method: req.Method,
-		Paras:  make(map[string]string),
-		Path:   req.URL.Path,
+		Writer:   w,
+		Req:      req,
+		Method:   req.Method,
+		Paras:    make(map[string]string),
+		Path:     req.URL.Path,
+		cntIndex: -1,
+	}
+}
+
+func (c *Context) CallNextHandler() {
+	c.cntIndex++
+	if c.cntIndex < len(c.handlers) {
+		c.handlers[c.cntIndex](c)
 	}
 }
 

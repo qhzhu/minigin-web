@@ -15,6 +15,7 @@ import (
 
 func main() {
 	e := minigin.New()
+	// e.RegisterMiddleware(minigin.Loggexr())
 	e.GET("/dd", func(c *minigin.Context) {
 		c.HTML(http.StatusOK, "<h1>Hello Gin</h1>")
 	})
@@ -25,6 +26,7 @@ func main() {
 		c.String(http.StatusOK, "Your name = %q\n", c.Paras["*name"])
 	})
 	grp1 := e.NewRouterGroup("/admin")
+	grp1.RegisterMiddleware(minigin.Logger())
 	grp1.GET("/*type", func(c *minigin.Context) {
 		c.String(http.StatusOK, "Your name = %q\n", c.Paras["*type"])
 	})
