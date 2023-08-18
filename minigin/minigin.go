@@ -2,13 +2,14 @@ package minigin
 
 import (
 	"net/http"
+	"strings"
 )
 
 type HandlerFunc func(c *Context)
 
 type (
 	RouterGroup struct {
-		Prefix      string
+		prefix      string
 		engine      *Engine
 		middlewares []HandlerFunc
 	}
@@ -28,7 +29,7 @@ func New() *Engine {
 
 func (e *Engine) NewRouterGroup(p string) *RouterGroup {
 	newgroup := &RouterGroup{
-		Prefix: p,
+		prefix: p,
 		engine: e,
 	}
 	// fmt.Println(p)
@@ -37,7 +38,7 @@ func (e *Engine) NewRouterGroup(p string) *RouterGroup {
 }
 
 func (group *RouterGroup) addRoute(method string, pattern string, handler HandlerFunc) {
-	pattern = group.Prefix + pattern
+	pattern = group.prefix + pattern
 	group.engine.router.addRoute(method, pattern, handler)
 }
 
@@ -49,11 +50,22 @@ func (group *RouterGroup) POST(pattern string, handler HandlerFunc) {
 	group.addRoute("POST", pattern, handler)
 }
 
+func (group *RouterGroup) RegisterMiddleware(mdws ...HandlerFunc) {
+	group.middlewares = append(group.middlewares, mdws...)
+}
+
 func (e *Engine) Run(addr string) (err error) {
 	return http.ListenAndServe(addr, e)
 }
 
 func (e *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	middlewares := make([]HandlerFunc, 0)
+	for _, grp := range e.groups {
+		if strings.HasPrefix(req.URL.Path, grp.prefix) {
+			middlewares = append(middlewares, grp.middlewares...)
+		}
+	}
 	c := newContext(w, req)
+	c.handlers = middlewares
 	e.router.handle(c)
 }

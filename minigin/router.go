@@ -1,6 +1,7 @@
 package minigin
 
 import (
+	"log"
 	"net/http"
 	"strings"
 )
@@ -20,6 +21,7 @@ func (r *Router) parsePattern(pattern string) []string {
 }
 
 func (r *Router) addRoute(method string, pattern string, handler HandlerFunc) {
+	log.Printf("Route %4s - %s", method, pattern)
 	parts := r.parsePattern(pattern)
 	updateTrie(r.root, method, parts, handler)
 }
@@ -30,8 +32,11 @@ func (r *Router) handle(c *Context) {
 	handler := searchTrie(0, r.root, c.Method, parts, paramsMap)
 	c.Paras = paramsMap
 	if handler != nil {
-		handler(c)
+		c.handlers = append(c.handlers, handler)
 	} else {
-		c.String(http.StatusNotFound, "404 NOT FOUND: %s\n", c.Path)
+		c.handlers = append(c.handlers, func(c *Context) {
+			c.String(http.StatusNotFound, "404 NOT FOUND: %s\n", c.Path)
+		})
 	}
+	c.CallNextHandler()
 }
