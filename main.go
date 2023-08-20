@@ -27,8 +27,13 @@ func main() {
 	})
 	grp1 := e.NewRouterGroup("/admin")
 	grp1.RegisterMiddleware(minigin.Logger())
+	grp1.RegisterMiddleware(minigin.PanicRecovery())
 	grp1.GET("/*type", func(c *minigin.Context) {
 		c.String(http.StatusOK, "Your name = %q\n", c.Paras["*type"])
+	})
+	grp1.GET("/test/panic", func(c *minigin.Context) {
+		strs := []string{"sample"}
+		c.String(http.StatusOK, strs[100])
 	})
 	e.Run(":8080")
 }

@@ -27,6 +27,12 @@ func New() *Engine {
 	return engine
 }
 
+func Default() *Engine {
+	engine := New()
+	engine.RegisterMiddleware(PanicRecovery(), Logger())
+	return engine
+}
+
 func (e *Engine) NewRouterGroup(p string) *RouterGroup {
 	newgroup := &RouterGroup{
 		prefix: p,
