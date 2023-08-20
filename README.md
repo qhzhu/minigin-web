@@ -2,6 +2,8 @@
 
 Minigin: A lightweight HTTP web framework written in Golang, inspired by the popular [Gin framework](https://gin-gonic.com/).
 
+Check [Reference]#reference of this codebase.
+
 ## Table of Contents 
 
 - [Description](#description)
